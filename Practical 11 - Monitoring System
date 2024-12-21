@@ -1,0 +1,109 @@
+package Practical_11;
+
+import java.time.LocalTime;
+
+//add comparedable
+public class accessHistory {
+    String userId;
+    LocalTime accessTime = LocalTime.now();
+    public accessHistory(String userIdArg,LocalTime timeArg) {
+        userId = userIdArg;
+        accessTime = timeArg;
+        LocalTime accessTime = LocalTime.now();
+    }
+    void printDetails(){
+        System.out.println("\nUser ID: "+userId + "\nAccess Time: " + accessTime);
+    }
+    String getUserId(){
+        return userId;
+    }
+    LocalTime getTime(){
+        return accessTime;
+    }
+}
+
+
+package Practical_11;
+
+public class userActivity {
+    public static void main(String[] args) {
+        System.out.println("User Activity");
+        //Creates an instance of monitoring system which can add, remove & print user access history
+        monitoringSystem myMonitor = new monitoringSystem("Example 1");
+        //Display in human friendly format
+        myMonitor.printDetails();
+        //Add Users
+        myMonitor.addUsers("u1");
+        myMonitor.addUsers("u2");
+        myMonitor.addUsers("u3");
+        myMonitor.addUsers("u4");
+        myMonitor.addUsers("u5");
+        //Total Ordering of the access history
+        myMonitor.sortAccessList();
+        //Remove Users
+        myMonitor.removeUsers("u3");
+        myMonitor.removeUsers("u4");
+        //Add another User
+        myMonitor.addUsers("u6");
+        //Sort the list
+        myMonitor.sortAccessList();
+
+
+    }
+}
+
+
+package Practical_11;
+
+import java.util.LinkedList;
+import java.time.LocalTime;
+import java.util.Comparator;
+
+public class monitoringSystem {
+    String systemName;
+    LinkedList<accessHistory> accessList = new LinkedList<accessHistory>();
+    //array of access history
+    public monitoringSystem(String systemNameArg) {
+        systemName = systemNameArg;
+        LinkedList<accessHistory> accessList = new LinkedList<accessHistory>();
+    }
+    void printDetails(){
+    System.out.println("Print Details");
+    }
+    void addUsers(String userId){
+        //get Current time
+        LocalTime accessTime = LocalTime.now();
+        //Add a new object to the access list
+        accessList.add(new accessHistory(userId,accessTime));
+        System.out.println(userId+" added\n Last access time"+accessTime);
+        //System.out.println(Float.parseFloat(accessTime.toString()));
+        //System.out.println(accessList.get(0).getUserId());
+    }
+    void removeUsers(String userId){
+        System.out.println("Remove Users");
+        int i = 0;
+        for (int j = 0; j < accessList.size(); j++) {
+            //iterate through the list and determine if the user id is within the list
+            if(accessList.get(j).getUserId()==userId){
+                //System.out.println("User to be removed: "+userId+"\naccess list element: "+accessList.get(i).getUserId());
+                System.out.println(userId+" removed\nNew Access List: "+accessList);
+                //remove the element which stores the instance of the access history object
+                accessList.remove(j);
+            }
+        }
+    }
+    void sortAccessList(){
+        //compare the times in and sort in order
+        accessList.sort(Comparator.comparing(accessHistory::getTime));
+        int i = 0;
+        //iterate through the access list
+        for (accessHistory myAccessHistory : accessList) {
+            System.out.println(accessList.get(i).getUserId());
+            i++;
+        }
+        i = 0;
+    }
+    void printAccessList(){
+        System.out.println("Print Access List"+ accessList);
+    }
+}
