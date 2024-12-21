@@ -1,0 +1,86 @@
+package Practical_13;
+
+import java.util.Stack;
+
+//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
+// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+public class Interpreter {
+    public static void main(String[] args) {
+        //Grammar Rules
+//        1. Operand := Boolean
+//        2. BinaryOperator := AND | OR
+//        3. UnaryOperator := NOT
+//        4. Operand := Operand Operand BinaryOperator
+//        5. Operand := Operand UnaryOperator
+        //example phrases
+        String examplePhraseOne = "true false AND false NOT OR";
+        String examplePhraseTwo = "true false AND false AND NOT";
+        String examplePhraseThree = "true false OR false AND true NOT OR";
+        boolean exampleOne = boolOp(examplePhraseOne);
+        //if the expression is determined to be invalid it will return false
+        if (!exampleOne) {
+            System.out.println("Invalid Expression");
+        }
+        System.out.println("\n\n");
+        boolean exampleTwo = boolOp(examplePhraseTwo);
+        boolean exampleThree= boolOp(examplePhraseThree);
+
+    }
+    public static boolean boolOp(String phrase){
+        //initialise a stack
+        Stack<String> stack = new Stack<String>();
+        String[] elements = new String[10];
+        elements = phrase.split(" ");
+        //split the example phrase into its seperate elements
+        for (String element : elements) {
+            //1. Operand := Boolean
+            if (element.equals("true") || element.equals("false")){
+                stack.push(element);
+                System.out.println("Rule 1: Operand("+stack.peek()+") := "+stack.peek()+"\n Stack: "+stack);
+            }
+            //2. BinaryOperator := AND | OR & 4. Operand := Operand Operand BinaryOperator
+            else if (element.equals("OR") || element.equals("AND")){
+                if (stack.size()<2){
+                    System.out.println("Invalid Expression");
+                    return false;
+                }
+                else{
+                    System.out.println("Rule 2: BinaryOperator("+element+") :="+element+"\n Stack: "+stack);
+                    String op1 = stack.pop();
+                    String op2 = stack.pop();
+                    boolean result = boolCalc(element,op1,op2);
+                    stack.push(String.valueOf(result));
+                    System.out.println("Rule 4: Operand("+op2+") := Operand("+op1+") Operand("+op2+") BinaryOperator("+element+")\n Stack: "+stack);
+                }
+            }
+            else if (element.equals("NOT")){
+                // 3. UnaryOpterator :=NOT 5. Operand UnaryOperator
+                if (stack.size()<1){
+                    System.out.println("Invalid Expression");
+                    return false;
+                }
+                else{
+                    stack.push(element);
+                    System.out.println("Rule 3: UnaryOperator("+element+") :="+element+"\n Stack: "+stack);
+                    stack.push(String.valueOf(unaryOpCalc(stack.pop(),stack.pop())));
+                    System.out.println("Rule 5: Operand("+stack.peek()+") := Operand("+stack.peek()+") UnaryOpertor("+element+")\n Stack: "+stack);
+                }
+            }
+        }
+        return true;
+    }
+    static boolean boolCalc(String operator, String operand1, String operand2){
+        if (operator.equals("AND")){
+            return Boolean.parseBoolean(operand1) && Boolean.parseBoolean(operand2);
+        }
+        else if (operator.equals("OR")){
+            return Boolean.parseBoolean(operand1) || Boolean.parseBoolean(operand2);
+        }
+        return true;
+    }
+    static boolean unaryOpCalc(String operator,String operand){
+        //System.out.println("DEBUG"+operator+" "+operand);
+        boolean result = Boolean.parseBoolean(operand);
+        return !result;
+    }
+}
