@@ -1,0 +1,106 @@
+package Practical_17;
+import java.util.HashMap;
+public class PhoneBook {
+    //Stores phone book entries in a map based on their details, while
+    //allowing duplicate full names by uniquely identifying each entry based
+    //on address, namely use a map within a map that maps entries as:
+    //“full name” → “address” → “entry” (i.e. Map<String, Map<String,PhoneBookEntry>>)
+    //Phone book entries can be inserted (add a new entry),
+    // updated(amend details of an existing entry) or deleted (delete an existing entry)
+    // Prints the details of existing entries (if present in the phone book) by
+    // searching the phone book based on a given full name, thus showing
+    // all corresponding entries
+    HashMap<String, String> fullNameToAddress = new HashMap<String, String>();
+    HashMap<String, PhoneBookEntry> addressToEntry = new HashMap<String, PhoneBookEntry>();
+
+    void addEntry(String nameEntry,String phoneEntry, String emailEntry,String addressEntry){
+        System.out.println("addEntry");
+        PhoneBookEntry entry = new PhoneBookEntry(nameEntry,phoneEntry,emailEntry,addressEntry);
+        //Map fullname as a key for address
+        fullNameToAddress.put(entry.getName(), entry.address);
+        //Map address as a key for a phonebookEntry obj
+        addressToEntry.put(entry.getAddress(), entry);
+        System.out.println("Entry added");
+    }
+    void removeEntry(String nameEntry){
+        addressToEntry.remove(fullNameToAddress.get(nameEntry));
+        fullNameToAddress.remove(nameEntry);
+        System.out.println("removeEntry");
+        System.out.println(fullNameToAddress.get(nameEntry));
+    }
+    void updateEntry(String nameEntry,String nameUpdated,String phoneUpdated,String emailUpdated,String addressUpdated){
+        System.out.println("updateEntry");
+        addressToEntry.remove(fullNameToAddress.get(nameEntry));
+        fullNameToAddress.remove(nameEntry);
+        PhoneBookEntry entry = new PhoneBookEntry(nameUpdated,phoneUpdated,emailUpdated,addressUpdated);
+        //Map fullname as a key for address
+        fullNameToAddress.put(entry.getName(), entry.address);
+        //Map address as a key for a phonebookEntry obj
+        addressToEntry.put(entry.getAddress(), entry);
+        System.out.println("Entry added");
+
+    }
+    void displayEntry(String nameEntry){
+        System.out.println("displayEntry\n");
+        PhoneBookEntry displayEntry = addressToEntry.get(fullNameToAddress.get(nameEntry));
+        displayEntry.printAll();
+
+    }
+
+}
+
+
+package Practical_17;
+
+public class PhoneBookEntry {
+    //Stores details of a phone book entry, including full name, phone
+    //number, email, and address
+    //Creates a human friendly representation of the class (i.e. toString())
+    String name = "";
+    String phoneNumber = "";
+    String email = "";
+    String address = "";
+    public PhoneBookEntry(String name, String phoneNumber, String email, String address) {
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.address = address;
+    }
+    String getName() {
+        return name;
+    }
+    String getPhoneNumber() {
+        return phoneNumber;
+    }
+    String getEmail() {
+        return email;
+    }
+    String getAddress() {
+        return address;
+    }
+    void setDetails(String name,String phoneNumber,String email,String address) {
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.address = address;
+        System.out.println("Updated");
+    }
+    void printAll(){
+        System.out.println("Name: " + name+"\nPhoneNumber: " + phoneNumber+"\nEmail: " + email+"\nAddress: " + address);
+    }
+}
+
+
+package Practical_17;
+
+public class User {
+    public static void main(String[] args) {
+        // Create a HashMap object called capitalCities
+        PhoneBook myPhoneBook = new PhoneBook();
+        myPhoneBook.addEntry("A","B","C","D");
+        myPhoneBook.addEntry("B","C","D","E");
+        myPhoneBook.removeEntry("B");
+        myPhoneBook.updateEntry("A","W","A","S","D");
+        myPhoneBook.displayEntry("W");
+    }
+}
