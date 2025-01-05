@@ -1,0 +1,198 @@
+class Graduation Records
+
+package Practical_12;
+
+import java.util.LinkedList;
+import java.util.List;
+
+//Graduation Record
+public class graduationRecords {
+    public static void main(String[] args) {
+        System.out.println("Graduation Records");
+        //Creates a course instance and subsequently inserts, updates, removes students for the course
+        Course myCourse = new Course("CS100",2024);
+        myCourse.printDetails();
+
+
+        //Lists of grades
+        LinkedList<Float> grades1 = new LinkedList<>(List.of(85.0f, 90.0f, 80.0f));
+        LinkedList<Float> grades2 = new LinkedList<>(List.of(15.0f, 20.0f, 60.0f));
+        LinkedList<Float> grades3 = new LinkedList<>(List.of(35.0f, 50.0f, 59.0f));
+        LinkedList<Float> grades4 = new LinkedList<>(List.of(75.0f, 80.0f, 90.0f));
+
+
+
+        //Add Students
+        myCourse.addStudent(0001,0f,grades1);
+        myCourse.addStudent(0002,0f,grades2);
+        myCourse.addStudent(0003,0f,grades3);
+        //sort the list
+        myCourse.sortList();
+        //delete students
+        myCourse.removeStudent(0002);
+        System.out.println("\nStudent Removed");
+        //sort the list
+        myCourse.sortList();
+        //update the list
+        myCourse.updateStudent(0003);
+        //
+        myCourse.addStudent(0004,0f,grades4);
+        //sort the list
+        myCourse.sortList();
+    }
+
+}
+
+class Course
+
+package Practical_12;
+
+import Practical_11.accessHistory;
+
+import java.util.LinkedList;
+import java.util.*;
+public class Course {
+    //Stores course id, academic year, and student list
+    String courseId = "";
+    int acaYear = 0;
+    LinkedList<Student> students = new LinkedList<Student>();
+    public Course(String courseIdArg,int acaYearArg){
+        //Stores course id, academic year, and student list
+        courseId = courseIdArg;
+        acaYear = acaYearArg;
+        LinkedList<Student> students = new LinkedList<Student>();
+    }
+    void printDetails(){
+        System.out.println("_______________\nCourse Details\nCourse Id: "+courseId+"\nAcademic Year: "+acaYear+"\n_______________");
+    }
+    void addStudent(int studentId, float avGrade,LinkedList<Float> gradesList){
+        float total = 0;
+        for(int i =0; i<gradesList.size(); i++){
+            total = total + gradesList.get(i);
+        }
+        avGrade = total/gradesList.size();
+        students.add(new Student(studentId,avGrade,gradesList));
+
+    }
+    void sortList(){
+        //students.sort((s1, s2) -> Float.compare(s2.getAvGrad(), s1.getAvGrad()));
+        students.sort(Comparator.comparingDouble(Student::getAvGrad).reversed());
+        int i = 0;
+        for (Student student : students) {
+            System.out.println("Student ID: " + students.get(i).getStudentId() + ", Average Grade: " + students.get(i).getAvGrad()+" Grade List: "+students.get(i).getGradeList());
+            i++;
+        }
+        i = 0;
+    }
+    void removeStudent(int studentId) {
+        //System.out.println("Students.index of: "+students.indexOf(studentId));
+        //students.remove(students.indexOf(studentId));
+        int i = 0;
+        int index = 0;
+        for (Student student : students) {
+            if (students.get(i).getStudentId() == studentId) {
+                index = i;
+            }
+            i++;
+        }
+        i = 0;
+        students.remove(index);
+    }
+    void displayStudentDetails(int studentId){
+        int i = 0;
+        int index = 0;
+        for (Student student : students) {
+            if (students.get(i).getStudentId() == studentId) {
+                index = i;
+            }
+            i++;
+        }
+        //Student s1 = new Student();
+        //Student.displayStudentDetails(students.get(index).getStudentId(),students.get(index).getAvGrad(),students.get(index).getGradeList());
+    }
+    void updateStudent(int studentId){
+        int index = 0;
+        int i = 0;
+        for (Student student : students) {
+            if (student.getStudentId() == studentId) {
+                index = i;
+            }
+            i++;
+//            students.get(i).getGradeList();
+        }
+        System.out.println("Current Grades"+ students.get(index).getGradeList());
+        students.get(index).clearGradeList();
+        Scanner myScanner = new Scanner(System.in);
+        System.out.println("How many Grades to be added: ");
+        int numGrades = myScanner.nextInt();
+        for (int j=0; j<numGrades; j++){
+            Scanner myScanner2 = new Scanner(System.in);
+            System.out.println("Grade: ");
+            students.get(index).addGrade(myScanner2.nextFloat());
+        }
+
+    }
+    public String toString(){
+        System.out.println("Course ID: "+courseId+"\nAcademic Year: "+acaYear+"Student Arr:"+students);
+        return "Course ID: "+courseId+"\nAcademic Year: "+acaYear+"Student Arr:"+students;
+    }
+
+}
+
+class Student 
+
+package Practical_12;
+
+import java.util.LinkedList;
+
+public class Student implements Comparable<Practical_12.Student> {
+    int StudentId = 0;
+    float avGrad = 0f;
+    LinkedList<Float> gradeList = new LinkedList<Float>();
+    public Student(int studentIdArg,float avGradArg,LinkedList<Float> gradesList){
+        StudentId = studentIdArg;
+        avGrad = avGradArg;
+        gradeList = gradesList;
+    }
+    int getStudentId(){
+        return StudentId;
+    }
+    float getAvGrad(
+    ){
+        return avGrad;
+    }
+    LinkedList<Float> getGradeList(){
+        return gradeList;
+    }
+    void clearGradeList(){
+        gradeList.clear();
+    }
+    void addGrade(float grade){
+        gradeList.add(grade);
+    }
+    void displayStudentDetails(int StudentId,float avGrad,LinkedList<Float> gradesList){
+
+        System.out.println("________________\nStudent Details\n________________\nStudent ID: " + StudentId+"\nAvGrad: " + avGrad+"\nGrades List: "+gradesList);
+        //System.out.println("AvGrad: " + avGrad);
+        //System.out.println("GradeList: " + gradeList);
+    }
+
+    void updateGrades(float grade1, float grade2,float grade3){
+        float av = grade1+grade2+grade3/3;
+        avGrad = av;
+        gradeList.clear();
+        gradeList.add(grade1);
+        gradeList.add(grade2);
+        gradeList.add(grade3);
+
+    }
+
+    public int compareTo(Student other) {
+        return Double.compare(this.avGrad, other.avGrad);
+    }
+    public String toString(){
+        System.out.println("Student Id: " + StudentId + "\nAvGrad: " + avGrad + "\nGrades List: " + gradeList);
+        return "Student Id: " + StudentId + "\nAvGrad: " + avGrad + "\nGrades List: " + gradeList;
+    }
+}
+
