@@ -1,0 +1,151 @@
+Class User Activity
+
+package Practical_11;
+
+public class userActivity {
+    public static void main(String[] args) {
+        System.out.println("User Activity");
+        //Creates an instance of monitoring system which can add, remove & print user access history
+        monitoringSystem myMonitor = new monitoringSystem("Example 1");
+        //Display in human friendly format
+        myMonitor.printDetails();
+        //Add Users
+        myMonitor.addUsers("u1");
+        myMonitor.addUsers("u2");
+        myMonitor.addUsers("u3");
+        myMonitor.addUsers("u4");
+        myMonitor.addUsers("u5");
+        myMonitor.addUsers("u8");
+        //Total Ordering of the access history
+        myMonitor.sortAccessList();
+        //Remove Users
+        myMonitor.removeUsers("u3");
+        myMonitor.removeUsers("u4");
+        //Add another User
+        myMonitor.addUsers("u6");
+        //Sort the list
+        myMonitor.sortAccessList();
+
+
+    }
+}
+
+Class monitoring System
+
+package Practical_11;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.time.LocalTime;
+import java.util.Comparator;
+
+public class monitoringSystem {
+    String systemName;
+    int totalUsers = 0;
+    accessHistory[] accessHistoryArray = new accessHistory[5];
+    public monitoringSystem(String systemNameArg) {
+        systemName = systemNameArg;
+    }
+    void printDetails(){
+    System.out.println("Print Details");
+    }
+    void addUsers(String userId){
+        totalUsers++;
+        LocalTime accessTime = LocalTime.now();
+        if (totalUsers<=5){
+            accessHistoryArray[totalUsers-1] = new accessHistory(userId, accessTime);
+        }
+        else{
+            System.out.println("TOO many users");
+            accessHistoryArray = addUserToArr(accessHistoryArray, new accessHistory(userId, accessTime));
+
+        }
+        System.out.println(userId+" added\n Last access time"+accessTime);
+    }
+    void removeUsers(String userId){
+        System.out.println("Remove Users");
+        //totalUsers--;
+        int i = 0;
+        for (int j = 0; j < accessHistoryArray.length; j++) {
+            //iterate through the list and determine if the user id is within the list
+            if(accessHistoryArray[j].getUserId()==userId){
+                totalUsers--;
+                System.out.println("User to be removed: "+userId);
+                removeUserFromArr(accessHistoryArray, i);
+                System.out.println(userId+" removed\nNew Access List: "+accessHistoryArray);
+            }
+        }
+    }
+    void sortAccessList(){
+        //compare the times in and sort in order
+        Comparator<accessHistory> sortByAccessTime = Comparator.comparing(accessHistory::getTime);
+        Arrays.sort(accessHistoryArray, sortByAccessTime);
+        System.out.println("SORTED: "+Arrays.toString(accessHistoryArray));
+        //int i = 0;
+        //iterate through the access list
+//        for (accessHistory myAccessHistory : accessHistoryArray) {
+//            System.out.println(accessHistoryArray.get(i).getUserId());
+//            i++;
+//        }
+        //i = 0;
+    }
+    public static accessHistory[] addUserToArr(accessHistory[] accessListOrig, accessHistory newUser){
+        accessHistory[] upDatedAccessList = Arrays.copyOf(accessListOrig, accessListOrig.length + 1);
+        upDatedAccessList[accessListOrig.length] = newUser;
+        return upDatedAccessList;
+    }
+    public static accessHistory[] removeUserFromArr(accessHistory[] accessListOrig, int indexToIgnore) {
+        accessHistory[] upDatedAccessList = new accessHistory[accessListOrig.length - 1];
+        for (int i = 0; i < indexToIgnore; i++) {
+            upDatedAccessList[i] = accessListOrig[i];
+        }
+        for (int i = indexToIgnore + 1; i < accessListOrig.length; i++) {
+            upDatedAccessList[i - 1] = accessListOrig[i];
+        }
+        return upDatedAccessList;
+    }
+    void printAccessList(){
+        System.out.println("Print Access List"+ Arrays.toString(accessHistoryArray));
+    }
+    public String toString(){
+        System.out.println("System Name:"+ systemName + "\nTotal Users:"+ totalUsers+ "\nArray: "+ Arrays.toString(accessHistoryArray));
+        return null;
+    }
+}
+
+
+class accessHistory
+
+package Practical_11;
+
+import java.time.LocalTime;
+
+//add comparedable
+//class AccessHistory implements Comparable<AccessHistory>
+public class accessHistory implements Comparable<accessHistory> {
+    String userId;
+    LocalTime accessTime = LocalTime.now();
+    public accessHistory(String userIdArg,LocalTime timeArg) {
+        userId = userIdArg;
+        accessTime = timeArg;
+        LocalTime accessTime = LocalTime.now();
+    }
+    void printDetails(){
+        System.out.println("\nUser ID: "+userId + "\nAccess Time: " + accessTime);
+    }
+    String getUserId(){
+        return userId;
+    }
+    LocalTime getTime(){
+        return accessTime;
+    }
+
+    @Override
+    public int compareTo(accessHistory other) {
+        return this.accessTime.compareTo(other.accessTime);
+    }
+    public String toString(){
+        System.out.println("User ID: "+userId+"\nAccess Time: "+accessTime);
+        return "User ID: "+userId+"\nAccess Time: "+accessTime;
+    }
+}
